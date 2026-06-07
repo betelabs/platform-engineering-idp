@@ -1,0 +1,49 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xpostgreses.platform.company.io
+spec:
+  group: platform.company.io
+  names:
+    kind: XPostgres
+    plural: xpostgreses
+  claimNames:
+    kind: Postgres
+    plural: postgreses
+  connectionSecretKeys:
+    - username
+    - password
+    - endpoint
+    - port
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required: [storageGB, instanceClass, engine]
+                  properties:
+                    storageGB:
+                      type: integer
+                      minimum: 5
+                      maximum: 1000
+                    instanceClass:
+                      type: string
+                      enum: [db.t3.micro, db.t3.small, db.t3.medium, db.r5.large, db.r5.xlarge]
+                    engine:
+                      type: string
+                      enum: [postgres, mysql]
+                    engineVersion:
+                      type: string
+                      default: "15"
+                    multiAZ:
+                      type: boolean
+                      default: false
+              required: [parameters]

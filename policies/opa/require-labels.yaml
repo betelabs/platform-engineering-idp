@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredLabels
+metadata:
+  name: require-platform-labels
+spec:
+  match:
+    kinds:
+      - apiGroups: ['']
+        kinds: [Pod]
+    excludedNamespaces: [kube-system, gatekeeper-system, crossplane-system, argocd]
+  parameters:
+    message: 'All pods must have app, team, env, and version labels'
+    labels:
+      - key: app
+      - key: team
+      - key: env
+      - key: version

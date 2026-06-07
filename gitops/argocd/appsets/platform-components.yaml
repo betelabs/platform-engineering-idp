@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: platform-components
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - component: backstage
+            namespace: backstage
+            path: helm/idp-platform
+          - component: crossplane
+            namespace: crossplane-system
+            path: helm/crossplane
+          - component: opa-gatekeeper
+            namespace: gatekeeper-system
+            path: helm/gatekeeper
+          - component: monitoring
+            namespace: monitoring
+            path: helm/monitoring
+  template:
+    metadata:
+      name: 'platform-{{component}}'
+    spec:
+      project: platform
+      source:
+        repoURL: https://github.com/ashwani547/platform-engineering-idp
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true

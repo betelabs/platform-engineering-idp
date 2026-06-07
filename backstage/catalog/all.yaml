@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: root
+  description: Root catalog location
+spec:
+  targets:
+    - ./groups.yaml
+    - ./systems.yaml

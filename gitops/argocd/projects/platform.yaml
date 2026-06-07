@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  description: Internal Developer Platform — core components
+  sourceRepos:
+    - https://github.com/ashwani547/platform-engineering-idp
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  roles:
+    - name: platform-admin
+      description: Platform team full access
+      policies:
+        - p, proj:platform:platform-admin, applications, *, platform/*, allow

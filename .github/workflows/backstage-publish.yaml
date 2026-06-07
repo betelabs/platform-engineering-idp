@@ -1,0 +1,40 @@
+name: Publish Backstage Docker Image
+
+on:
+  push:
+    branches: [main]
+    paths: [backstage/**]
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        working-directory: backstage
+        run: yarn install --frozen-lockfile
+
+      - name: Build Backstage
+        working-directory: backstage
+        run: yarn build:all
+
+      - name: Build Docker image
+        working-directory: backstage
+        run: |
+          docker image build . \
+            -f packages/backend/Dockerfile \
+            --tag ghcr.io/${{ github.repository }}/backstage:${{ github.sha }}
+
+      - name: Push to GHCR
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $ --password-stdin
+          docker push ghcr.io/${{ github.repository }}/backstage:${{ github.sha }}

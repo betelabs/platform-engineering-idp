@@ -1,0 +1,42 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xnamespaces.platform.company.io
+spec:
+  group: platform.company.io
+  names:
+    kind: XNamespace
+    plural: xnamespaces
+  claimNames:
+    kind: Namespace
+    plural: namespaces
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                parameters:
+                  type: object
+                  required: [team, environment]
+                  properties:
+                    team:
+                      type: string
+                    environment:
+                      type: string
+                      enum: [dev, staging, production]
+                    resourceQuota:
+                      type: object
+                      properties:
+                        cpu:
+                          type: string
+                          default: "4"
+                        memory:
+                          type: string
+                          default: "8Gi"
+              required: [parameters]

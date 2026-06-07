@@ -1,0 +1,20 @@
+# Example: developer claims a managed Postgres database
+# Apply to your team namespace: kubectl apply -f claim-postgres.yaml -n team-payments
+apiVersion: platform.company.io/v1alpha1
+kind: Postgres
+metadata:
+  name: payments-db
+  namespace: team-payments
+spec:
+  parameters:
+    storageGB: 20
+    instanceClass: db.t3.medium
+    engine: postgres
+    engineVersion: "15"
+    multiAZ: false
+  compositionSelector:
+    matchLabels:
+      provider: aws
+      engine: postgres
+  writeConnectionSecretToRef:
+    name: payments-db-creds

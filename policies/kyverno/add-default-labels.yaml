@@ -1,0 +1,22 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-default-labels
+  annotations:
+    policies.kyverno.io/title: Add Default Labels
+    policies.kyverno.io/description: >
+      Mutates pods to add platform standard labels if missing.
+      Ensures every workload is discoverable in the catalog.
+spec:
+  rules:
+    - name: add-managed-by-label
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              +(managed-by): platform-idp
+              +(platform-version): '1.0'
