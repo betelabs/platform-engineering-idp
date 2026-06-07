@@ -9,7 +9,7 @@
 
 ## Development Setup
 ```bash
-git clone https://github.com/ashwani547/platform-engineering-idp.git
+git clone https://github.com/betelabs/platform-engineering-idp.git
 cd platform-engineering-idp
 # For Backstage development:
 cd backstage && yarn install && yarn dev

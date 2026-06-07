@@ -6,7 +6,7 @@ metadata:
 spec:
   description: Internal Developer Platform — core components
   sourceRepos:
-    - https://github.com/ashwani547/platform-engineering-idp
+    - https://github.com/betelabs/platform-engineering-idp
   destinations:
     - namespace: '*'
       server: https://kubernetes.default.svc

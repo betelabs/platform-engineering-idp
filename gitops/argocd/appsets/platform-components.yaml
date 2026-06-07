@@ -25,7 +25,7 @@ spec:
     spec:
       project: platform
       source:
-        repoURL: https://github.com/ashwani547/platform-engineering-idp
+        repoURL: https://github.com/betelabs/platform-engineering-idp
         targetRevision: HEAD
         path: '{{path}}'
       destination:

@@ -25,7 +25,7 @@ export const HomePage = () => (
               tools={[
                 { label: 'ArgoCD',    url: process.env.ARGOCD_BASE_URL    || '#', icon: <span>🚀</span> },
                 { label: 'Grafana',   url: process.env.GRAFANA_BASE_URL   || '#', icon: <span>📊</span> },
-                { label: 'GitHub',    url: 'https://github.com/your-org',          icon: <span>🐙</span> },
+                { label: 'GitHub',    url: 'https://github.com/betelabs',          icon: <span>🐙</span> },
                 { label: 'Runbooks',  url: '/docs/default/system/developer-platform', icon: <span>📖</span> },
               ]}
             />
