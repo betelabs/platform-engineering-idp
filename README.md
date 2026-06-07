@@ -55,47 +55,47 @@ Developer ships code on day 1
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                     Developer Experience Layer                       │
+│                     Developer Experience Layer                      │
 │                                                                     │
-│              ┌──────────────────────────────────┐                  │
-│              │      Backstage IDP Portal         │                  │
-│              │  Service Catalog · Templates ·    │                  │
-│              │  TechDocs · API Explorer          │                  │
-│              └──────────────┬───────────────────┘                  │
+│              ┌──────────────────────────────────┐                   │
+│              │      Backstage IDP Portal        │                   │
+│              │  Service Catalog · Templates ·   │                   │
+│              │  TechDocs · API Explorer         │                   │
+│              └──────────────┬───────────────────┘                   │
 └─────────────────────────────┼───────────────────────────────────────┘
                               │  developer creates component
                               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                    Self-Service Provisioning Layer                   │
+│                    Self-Service Provisioning Layer                  │
 │                                                                     │
-│   ┌─────────────────┐         ┌──────────────────────────────┐     │
-│   │   Crossplane     │         │      Backstage Scaffolder    │     │
-│   │  Compositions    │         │   (Software Templates)       │     │
-│   │  ┌────────────┐ │         │   Generates: repo · CI ·     │     │
-│   │  │ XPostgres  │ │         │   catalog-info.yaml          │     │
-│   │  │ XNamespace │ │         └──────────────────────────────┘     │
-│   │  │ XBucket    │ │                                              │
-│   │  └────────────┘ │                                              │
-│   └─────────┬───────┘                                              │
+│   ┌─────────────────┐         ┌──────────────────────────────┐      │
+│   │   Crossplane    │         │      Backstage Scaffolder    │      │
+│   │  Compositions   │         │   (Software Templates)       │      │
+│   │  ┌────────────┐ │         │   Generates: repo · CI ·     │      │
+│   │  │ XPostgres  │ │         │   catalog-info.yaml          │      │
+│   │  │ XNamespace │ │         └──────────────────────────────┘      │
+│   │  │ XBucket    │ │                                               │
+│   │  └────────────┘ │                                               │
+│   └─────────┬───────┘                                               │
 └─────────────┼───────────────────────────────────────────────────────┘
               │  infrastructure claim
               ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                       GitOps Delivery Layer                          │
+│                       GitOps Delivery Layer                         │
 │                                                                     │
-│   Git Repository ──► ArgoCD ApplicationSet ──► Kubernetes Cluster  │
+│   Git Repository ──► ArgoCD ApplicationSet ──► Kubernetes Cluster   │
 │                           │                                         │
 │                    ┌──────▼───────┐                                 │
 │                    │  OPA/Kyverno │                                 │
 │                    │  Policies    │                                 │
 │                    │  (enforced   │                                 │
 │                    │  at admission│                                 │
-│                    └─────────────┘                                  │
+│                    └─────────────-┘                                 │
 └─────────────────────────────────────────────────────────────────────┘
-              │
-              ▼
+                            │
+                            ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                      Cloud Infrastructure Layer                      │
+│                      Cloud Infrastructure Layer                     │
 │          AWS (EKS) · Azure (AKS) · GCP (GKE) via Terraform          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
