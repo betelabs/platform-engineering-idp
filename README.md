@@ -13,7 +13,7 @@ GitOps delivery, and policy enforcement in one cohesive platform**
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-1.29-326CE5?logo=kubernetes&logoColor=white)](https://kubernetes.io)
 [![Terraform](https://img.shields.io/badge/Terraform-1.7-7B42BC?logo=terraform&logoColor=white)](https://terraform.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/ashwani547/platform-engineering-idp?style=social)](https://github.com/ashwani547/platform-engineering-idp)
+[![Stars](https://img.shields.io/github/stars/ashwani547/platform-engineering-idp?style=social)](https://github.com/betelabs/platform-engineering-idp)
 
 </div>
 
@@ -130,7 +130,7 @@ yarn >= 1.22        # for Backstage
 ### 1 — Bootstrap the Platform (10 minutes)
 
 ```bash
-git clone https://github.com/ashwani547/platform-engineering-idp.git
+git clone https://github.com/betelabs/platform-engineering-idp.git
 cd platform-engineering-idp
 
 # Provision the cluster (choose your cloud)
