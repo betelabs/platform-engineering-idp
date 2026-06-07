@@ -1,0 +1,53 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: xpostgres-aws
+  labels:
+    provider: aws
+    engine: postgres
+spec:
+  compositeTypeRef:
+    apiVersion: platform.company.io/v1alpha1
+    kind: XPostgres
+
+  writeConnectionSecretsToNamespace: crossplane-system
+
+  resources:
+    - name: rds-instance
+      base:
+        apiVersion: rds.aws.crossplane.io/v1alpha1
+        kind: DBInstance
+        spec:
+          forProvider:
+            region: ap-south-1
+            dbInstanceClass: db.t3.medium   # overridden via patch
+            engine: postgres
+            engineVersion: "15"
+            allocatedStorage: 20            # overridden via patch
+            storageType: gp3
+            storageEncrypted: true
+            multiAZ: false
+            publiclyAccessible: false
+            skipFinalSnapshot: false
+            deletionProtection: true
+            autoMinorVersionUpgrade: true
+            backupRetentionPeriod: 7
+            copyTagsToSnapshot: true
+          providerConfigRef:
+            name: default
+          writeConnectionSecretToRef:
+            namespace: crossplane-system
+      patches:
+        - fromFieldPath: spec.parameters.instanceClass
+          toFieldPath: spec.forProvider.dbInstanceClass
+        - fromFieldPath: spec.parameters.storageGB
+          toFieldPath: spec.forProvider.allocatedStorage
+        - fromFieldPath: spec.parameters.engineVersion
+          toFieldPath: spec.forProvider.engineVersion
+        - fromFieldPath: spec.parameters.multiAZ
+          toFieldPath: spec.forProvider.multiAZ
+      connectionDetails:
+        - fromConnectionSecretKey: username
+        - fromConnectionSecretKey: password
+        - fromConnectionSecretKey: endpoint
+        - fromConnectionSecretKey: port

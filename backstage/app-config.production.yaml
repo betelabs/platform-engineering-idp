@@ -1,0 +1,20 @@
+app:
+  baseUrl: ${BACKSTAGE_BASE_URL}
+
+backend:
+  baseUrl: ${BACKSTAGE_BACKEND_URL}
+  database:
+    client: pg
+    connection:
+      host: ${POSTGRES_HOST}
+      port: ${POSTGRES_PORT}
+      user: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
+      database: backstage_catalog
+
+techdocs:
+  publisher:
+    type: awsS3
+    awsS3:
+      bucketName: ${TECHDOCS_S3_BUCKET}
+      region: ap-south-1

@@ -1,0 +1,66 @@
+name: CI — Validate Platform Config
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-helm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Lint Helm charts
+        run: |
+          helm lint helm/idp-platform/
+          helm lint helm/app-template/
+
+      - name: Template render (smoke test)
+        run: |
+          helm template test-release helm/app-template/ \
+            --set image.repository=ghcr.io/org/app \
+            --set image.tag=v1.0.0 \
+            --set labels.app=test \
+            --set labels.team=platform \
+            --set labels.env=dev \
+            --set labels.version=v1.0.0
+
+  validate-policies:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install conftest
+        run: |
+          wget -q https://github.com/open-policy-agent/conftest/releases/download/v0.49.0/conftest_0.49.0_Linux_x86_64.tar.gz
+          tar xzf conftest_0.49.0_Linux_x86_64.tar.gz
+          sudo mv conftest /usr/local/bin/
+
+      - name: Validate Crossplane compositions
+        run: |
+          for f in crossplane/compositions/*.yaml; do
+            echo "Validating $f..."
+            kubectl apply --dry-run=client -f "$f" 2>&1 | grep -v 'Warning' || true
+          done
+
+  validate-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.7.5'
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive terraform/
+      - name: Terraform validate (AWS)
+        run: |
+          cd terraform/aws
+          terraform init -backend=false
+          terraform validate

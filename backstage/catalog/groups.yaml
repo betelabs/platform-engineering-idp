@@ -1,0 +1,24 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-engineering
+  description: Platform Engineering team — owns the IDP
+spec:
+  type: team
+  profile:
+    displayName: Platform Engineering
+    email: platform@company.com
+  children: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: backend-engineering
+  description: Backend Engineering squad
+spec:
+  type: team
+  profile:
+    displayName: Backend Engineering
+  parent: engineering
+  children: []

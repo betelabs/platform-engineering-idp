@@ -1,0 +1,17 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: developer-platform
+  description: Internal Developer Platform — all platform tooling
+  tags: [platform, internal]
+spec:
+  owner: platform-engineering
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: payments-platform
+  description: Payment processing system
+spec:
+  owner: backend-engineering

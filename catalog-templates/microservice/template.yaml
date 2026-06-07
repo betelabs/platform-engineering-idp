@@ -1,0 +1,132 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: microservice-template
+  title: New Microservice
+  description: Create a production-ready microservice with CI/CD, database, and ArgoCD deployment
+  tags: [recommended, python, go, nodejs]
+spec:
+  owner: platform-engineering
+  type: service
+
+  parameters:
+    - title: Service Details
+      required: [name, description, owner]
+      properties:
+        name:
+          title: Service Name
+          type: string
+          description: Unique name for your microservice (e.g. payments-api)
+          pattern: '^[a-z][a-z0-9-]*[a-z0-9]$'
+        description:
+          title: Description
+          type: string
+        owner:
+          title: Team Owner
+          type: string
+          ui:field: OwnerPicker
+          ui:options:
+            catalogFilter:
+              kind: [Group]
+
+    - title: Tech Stack
+      required: [language, framework]
+      properties:
+        language:
+          title: Language
+          type: string
+          enum: [python, go, nodejs, java]
+          default: python
+        framework:
+          title: Framework
+          type: string
+          enumNames: [FastAPI, Flask, Gin, Express, Spring Boot]
+          enum: [fastapi, flask, gin, express, spring-boot]
+        database:
+          title: Need a database?
+          type: string
+          enum: [none, postgres, mysql, redis]
+          default: none
+
+    - title: Deployment
+      required: [environment, cloud]
+      properties:
+        environment:
+          title: Target Environment
+          type: string
+          enum: [dev, staging, production]
+          default: staging
+        cloud:
+          title: Cloud Provider
+          type: string
+          enum: [aws, azure, gcp]
+          default: aws
+        replicaCount:
+          title: Initial Replica Count
+          type: integer
+          default: 2
+          minimum: 1
+          maximum: 10
+
+    - title: Repository
+      required: [repoUrl]
+      properties:
+        repoUrl:
+          title: Repository Location
+          type: string
+          ui:field: RepoUrlPicker
+          ui:options:
+            allowedHosts: [github.com]
+
+  steps:
+    - id: fetch-base
+      name: Fetch Base Template
+      action: fetch:template
+      input:
+        url: ./skeleton
+        values:
+          name: ${{ parameters.name }}
+          description: ${{ parameters.description }}
+          owner: ${{ parameters.owner }}
+          language: ${{ parameters.language }}
+          framework: ${{ parameters.framework }}
+          database: ${{ parameters.database }}
+          environment: ${{ parameters.environment }}
+          cloud: ${{ parameters.cloud }}
+          replicaCount: ${{ parameters.replicaCount }}
+
+    - id: publish
+      name: Publish to GitHub
+      action: publish:github
+      input:
+        allowedHosts: [github.com]
+        description: ${{ parameters.description }}
+        repoUrl: ${{ parameters.repoUrl }}
+        defaultBranch: main
+
+    - id: create-argocd-app
+      name: Create ArgoCD Application
+      action: argocd:create-resources
+      input:
+        appName: ${{ parameters.name }}
+        argoInstance: production
+        namespace: team-${{ parameters.owner }}
+        repoUrl: ${{ steps.publish.output.remoteUrl }}
+        path: helm
+
+    - id: register
+      name: Register in Catalog
+      action: catalog:register
+      input:
+        repoContentsUrl: ${{ steps.publish.output.repoContentsUrl }}
+        catalogInfoPath: /catalog-info.yaml
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ steps.publish.output.remoteUrl }}
+      - title: Open in Catalog
+        icon: catalog
+        entityRef: ${{ steps.register.output.entityRef }}
+      - title: ArgoCD App
+        url: ${{ steps.create-argocd-app.output.appUrl }}

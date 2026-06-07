@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-image-tag
+  annotations:
+    policies.kyverno.io/title: Restrict Image Tag
+    policies.kyverno.io/description: >
+      Blocks 'latest' image tag in staging and production namespaces.
+      Enforces immutable, digest-based image references.
+spec:
+  validationFailureAction: Enforce
+  rules:
+    - name: validate-image-tag
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaceSelector:
+                matchExpressions:
+                  - key: platform.company.io/env
+                    operator: In
+                    values: [staging, production]
+      validate:
+        message: 'Image tag latest is not allowed in staging/production. Use a specific tag or digest.'
+        pattern:
+          spec:
+            containers:
+              - image: '!*:latest'

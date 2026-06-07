@@ -1,0 +1,71 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: managed-database-template
+  title: Managed Database
+  description: Self-service provisioning of a managed database via Crossplane
+  tags: [database, crossplane, self-service]
+spec:
+  owner: platform-engineering
+  type: resource
+
+  parameters:
+    - title: Database Details
+      required: [name, owner, engine]
+      properties:
+        name:
+          title: Database Name
+          type: string
+          pattern: '^[a-z][a-z0-9-]*[a-z0-9]$'
+        owner:
+          title: Team Owner
+          type: string
+          ui:field: OwnerPicker
+        engine:
+          title: Database Engine
+          type: string
+          enum: [postgres, mysql]
+          default: postgres
+        engineVersion:
+          title: Engine Version
+          type: string
+          default: "15"
+        instanceClass:
+          title: Instance Size
+          type: string
+          enum: [db.t3.micro, db.t3.small, db.t3.medium, db.r5.large]
+          default: db.t3.medium
+        storageGB:
+          title: Storage (GB)
+          type: integer
+          default: 20
+          minimum: 5
+          maximum: 1000
+        environment:
+          title: Environment
+          type: string
+          enum: [dev, staging, production]
+          default: staging
+
+  steps:
+    - id: create-crossplane-claim
+      name: Create Crossplane Database Claim
+      action: fetch:template
+      input:
+        url: ./crossplane-claim
+        values:
+          name: ${{ parameters.name }}
+          owner: ${{ parameters.owner }}
+          engine: ${{ parameters.engine }}
+          engineVersion: ${{ parameters.engineVersion }}
+          instanceClass: ${{ parameters.instanceClass }}
+          storageGB: ${{ parameters.storageGB }}
+          environment: ${{ parameters.environment }}
+
+  output:
+    text:
+      - title: Database Provisioning Started
+        content: |
+          Your database **${{ parameters.name }}** is being provisioned.
+          Connection credentials will be available as a Kubernetes secret
+          named `${{ parameters.name }}-creds` in your team namespace within 5-10 minutes.

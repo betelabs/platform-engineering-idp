@@ -1,0 +1,60 @@
+app:
+  title: Platform IDP
+  baseUrl: http://localhost:3000
+
+organization:
+  name: Platform Engineering
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+  rules:
+    - allow: [Component, System, API, Group, User, Resource, Location, Template]
+  locations:
+    - type: file
+      target: ../../catalog/all.yaml
+    - type: file
+      target: ../../catalog-templates/microservice/template.yaml
+    - type: file
+      target: ../../catalog-templates/database/template.yaml
+    - type: file
+      target: ../../catalog-templates/frontend/template.yaml
+
+techdocs:
+  builder: local
+  generator:
+    runIn: local
+  publisher:
+    type: local
+
+argocd:
+  baseUrl: ${ARGOCD_BASE_URL}
+  token: ${ARGOCD_TOKEN}
+
+grafana:
+  baseUrl: ${GRAFANA_BASE_URL}
+  proxyPath: /grafana
+
+kubernetes:
+  serviceLocatorMethod:
+    type: multiTenant
+  clusterLocatorMethods:
+    - type: config
+      clusters:
+        - url: ${K8S_CLUSTER_URL}
+          name: production
+          authProvider: serviceAccount
+          serviceAccountToken: ${K8S_SERVICE_ACCOUNT_TOKEN}

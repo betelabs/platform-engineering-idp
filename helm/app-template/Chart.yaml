@@ -1,0 +1,9 @@
+apiVersion: v2
+name: app-template
+description: Golden-path Helm chart for all developer applications on the IDP
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+maintainers:
+  - name: Ashwani Kumar
+    email: ashwani.kumar.career@gmail.com

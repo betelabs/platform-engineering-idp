@@ -1,0 +1,12 @@
+# Example: provision a full team namespace with RBAC and ResourceQuota
+apiVersion: platform.company.io/v1alpha1
+kind: Namespace
+metadata:
+  name: team-payments-ns
+spec:
+  parameters:
+    team: payments
+    environment: production
+    resourceQuota:
+      cpu: "8"
+      memory: "16Gi"
