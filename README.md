@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏗️ platform-engineering-idp
+# 🏗️ Platform Engineering IDP
 
 **Production-grade Internal Developer Platform — self-service infrastructure, service catalog,
 GitOps delivery, and policy enforcement in one cohesive platform**
